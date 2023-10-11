@@ -28,6 +28,17 @@ exports.loginUser = catchAsyncErrors ( async (req, res, next) => {
 
 })
 
+// Get currently logged in user => /api/v1/me
+
+exports.getUser = catchAsyncErrors ( async ( req, res, next) => {
+    const user = await User.findById(req.user.id);
+
+    res.status(200).json({
+        success: true,
+        user
+    })
+})
+
 // LogOut => /api/v1/logout
 
 exports.logoutUser = catchAsyncErrors ( async (req, res, next) => {
