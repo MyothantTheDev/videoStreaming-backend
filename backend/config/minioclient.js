@@ -1,14 +1,13 @@
 const Minio = require('minio');
-// const dotenv = require('dotenv');
-
-// dotenv.config({ path: 'backend/config/config.env' });
+const dotenv = require('dotenv');
+dotenv.config({ path: 'backend/config/config.env' });
 
 const minioClient = new Minio.Client({
-    endPoint: 'minio.container.net',
+    endPoint: 'localhost',
     port: 9000,
     useSSL: false,
-    accessKey: '46UcATDjkKhsOHKQi4Wy',
-    secretKey: 'wH5A3PumkuFj0XD2XS6XshIdVcmPQJ8itcnjGROd'
+    accessKey: process.env.MINIO_ACCESS_KEY,
+    secretKey: process.env.MINIO_SECRET_KEY
 });
 
 module.exports = minioClient;

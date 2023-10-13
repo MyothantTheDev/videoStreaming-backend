@@ -7,7 +7,7 @@ const { isdir,createPath,getFolder } = require('../utils/File');
 const Storage = multer.diskStorage({
     destination: function(req, file, cb) {
         const path = getFolder();
-        if(isdir()) {
+        if(!isdir()) {
             createPath();
         }
         cb(null, path);
