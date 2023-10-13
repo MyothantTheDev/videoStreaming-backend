@@ -6,6 +6,7 @@ const catchAsyncErrors = require('../middleware/CatchingAsyncErrors');
 const APIFeatures = require('../utils/apiFeature');
 const minioClient = require('../config/minioclient');
 const fs = require('fs');
+const minioObjectDelete = require('../utils/minioUtils');
 
 
 exports.newVideo = catchAsyncErrors ( async (req, res, next) => {
@@ -58,10 +59,6 @@ exports.updateVideo = catchAsyncErrors ( async (req, res, next) => {
     var video = await Video.findById(req.body._id).populate('batchId').exec();
     await minioClient.removeObject(video.batchId.name, video.title);
     const batch = await Batch.findById(batchId);
-    // video.title = file.originalname;
-    // video.size = file.size;
-    // video.batchId = new mongoose.Types.ObjectId(batchId);
-    // await video.save()
     const updateItem = await Video.updateOne({ _id: video._id }, {
         $set: {
             title: file.originalname,
@@ -85,8 +82,13 @@ exports.updateVideo = catchAsyncErrors ( async (req, res, next) => {
 exports.deleteVideo = catchAsyncErrors ( async (req, res, next) => {
 
     const apiFeature = new APIFeatures(Video, req.body).delete();
-    const video = await apiFeature.query;sudo 
-
+    const video = await Promise.all(apiFeature.query);
+    
+    if (Array.isArray(video)) {
+        await video.forEach( vid => minioObjectDelete(vid) );
+    } else {
+        await minioObjectDelete(video);
+    }
 
     if(Object.keys(video).length === 0){
         return next(new ErrorHandler('Video not found!', 404));
