@@ -10,10 +10,19 @@ class APIFeatures {
             this.queryStr.batchId = batchId;
         }
         if (this.queryStr.id) {
-            const _id = this.queryStr.id;
+            const _id = this.typeObjecId(this.queryStr.id);
             delete this.queryStr.id;
             this.queryStr._id = _id;
         }
+    }
+
+    typeObjecId (ids) {
+        if ( Array.isArray(ids) ) {
+            let arrayId = []
+            ids.forEach((id) => arrayId.push(new mongoose.Types.ObjectId(id)))
+            return arrayId;
+        }
+        return new mongoose.Types.ObjectId(ids);
     }
 
     search() {
@@ -43,10 +52,10 @@ class APIFeatures {
     }
 
     delete() {
-        if(Object.keys(this.queryStr._id).length > 1) {
-            this.query = this.query.deleteMany({ _id: {
-                $in: [...this.queryStr._id]
-            }});
+        if(Array.isArray(this.queryStr._id)) {
+            let array_del = [];
+            this.queryStr._id.forEach((id) => array_del.push(this.query.findByIdAndDelete(id)));
+            this.query = array_del;
         } else {
             this.query = this.query.findByIdAndDelete({...this.queryStr});
         }
