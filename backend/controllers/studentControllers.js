@@ -11,58 +11,58 @@ exports.newStudents = catchAsyncErrors (async (req, res, next) => {
     if (exist) {
         return next(new ErrorHandler("Email already in use. Try another one!", 406));
     }
-    const user = await User.create(req.body);
+    const student = await User.create(req.body);
     
     res.status(200).json({
         success: true,
         message : 'User created!',
-        user
+        student
     })
 })
 
 exports.getStudents = catchAsyncErrors (async (req, res, next) => {
     
     const apiFeature = new APIFeatures(User, req.query).search();
-    const user = await apiFeature.query;
+    const student = await apiFeature.query;
  
-    if(user.length === 0) {
+    if(student.length === 0) {
         return next(new ErrorHandler('User not found!', 404))
     }
 
     res.status(200).json({
         success: true,
         message : 'Retrieved Required User.',
-        user
+        student
     })
 })
 
 exports.updateStudents = catchAsyncErrors (async (req, res, next) => {
     const apiFeature = new APIFeatures(User, req.body).update();
-    const user = await apiFeature.query;
+    const student = await apiFeature.query;
 
-    if(Object.keys(user).length === 0){
+    if(Object.keys(student).length === 0){
         return next(new ErrorHandler('User not found!', 404));
     }
 
     res.status(200).json({
         success: true,
         message: 'Updated User Successful.',
-        user
+        student
     })
 })
 
 exports.deleteStudents = catchAsyncErrors ( async (req, res, next) => {
 
     const apiFeature = new APIFeatures(User, req.query).delete();
-    const user = await apiFeature.query;
+    const student = await apiFeature.query;
 
-    if(Object.keys(user).length === 0){
+    if(Object.keys(student).length === 0){
         return next(new ErrorHandler('User not found!', 404));
     }
 
     res.status(200).json({
         success: true,
         message: 'Deleted User Successful.',
-        user
+        student
     })
 })
