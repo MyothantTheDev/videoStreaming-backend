@@ -32,6 +32,7 @@ exports.getStudents = catchAsyncErrors (async (req, res, next) => {
     res.status(200).json({
         success: true,
         message : 'Retrieved Required User.',
+        count: student.length,
         student
     })
 })
