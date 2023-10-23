@@ -22,8 +22,8 @@ exports.newStudents = catchAsyncErrors (async (req, res, next) => {
 
 exports.getStudents = catchAsyncErrors (async (req, res, next) => {
     
-    const apiFeature = new APIFeatures(User, req.query).search();
-    const student = await apiFeature.query;
+    const apiFeature = new APIFeatures(User, req.query).search(true);
+    const student = await apiFeature.query.populate('batchId');
  
     if(student.length === 0) {
         return next(new ErrorHandler('User not found!', 404))

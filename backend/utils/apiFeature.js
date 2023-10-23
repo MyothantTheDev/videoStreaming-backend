@@ -25,7 +25,7 @@ class APIFeatures {
         return new mongoose.Types.ObjectId(ids);
     }
 
-    search() {
+    search( foruserRoute = null ) {
         
         if (this.queryStr.username){
             const username = {
@@ -35,7 +35,19 @@ class APIFeatures {
             
             this.queryStr.username = username;
         }
+        if ( foruserRoute ) {
+            
+            const batchExist = {
+                $ne: null
+            }
+            this.queryStr.batchId = {
+                ...this.queryStr.batchId,
+                ...batchExist
+            };
+            
+        }
         this.query = this.query.find( {...this.queryStr} );
+        
         return this;
     }
 
