@@ -11,7 +11,8 @@ exports.newStudents = catchAsyncErrors (async (req, res, next) => {
     if (exist) {
         return next(new ErrorHandler("Email already in use. Try another one!", 406));
     }
-    const student = await User.create(req.body);
+    let student = await User.create(req.body);
+    delete student.password;
     
     res.status(200).json({
         success: true,
@@ -23,7 +24,7 @@ exports.newStudents = catchAsyncErrors (async (req, res, next) => {
 exports.getStudents = catchAsyncErrors (async (req, res, next) => {
     
     const apiFeature = new APIFeatures(User, req.query).search(true);
-    const student = await apiFeature.query.populate('batchId');
+    const student = await apiFeature.query.populate('batchId').select('-password');
  
     if(student.length === 0) {
         return next(new ErrorHandler('User not found!', 404))
