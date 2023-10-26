@@ -23,6 +23,7 @@ exports.getBatch = async (req, res, next) => {
     const batch = await Batch.find({});
     res.status(200).json({
         success: true,
-        batch
+        batch,
+        count: batch.length
     })
 }
