@@ -65,6 +65,7 @@ exports.deleteStudents = catchAsyncErrors ( async (req, res, next) => {
     res.status(200).json({
         success: true,
         message: 'Deleted User Successful.',
+        count: student.length,
         student
     })
 })
