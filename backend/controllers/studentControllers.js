@@ -16,7 +16,7 @@ exports.newStudents = catchAsyncErrors (async (req, res, next) => {
     
     res.status(200).json({
         success: true,
-        message : 'User created!',
+        message : `${student.username}'s account is created!`,
         student
     })
 })
