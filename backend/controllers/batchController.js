@@ -1,5 +1,6 @@
 const Batch = require('../models/batch');
 const minioClient = require('../config/minioclient');
+const ErrorHandler = require('../utils/errorHandler');
 
 exports.newBatch = async (req, res, next) => {
     const exist = await Batch.findOne({name: req.body.name});
@@ -15,7 +16,8 @@ exports.newBatch = async (req, res, next) => {
 
     res.status(201).json({
         success: true,
-        batch
+        batch,
+        message: `${batchName} is created.`
     })
 }
 
