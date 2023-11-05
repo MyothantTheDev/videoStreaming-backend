@@ -40,7 +40,7 @@ exports.newVideo = catchAsyncErrors ( async (req, res, next) => {
 
 exports.getVideo = catchAsyncErrors ( async (req, res, next) => {
     const apiFeature = new APIFeatures(Video, req.query).search();
-    const video = await apiFeature.query;
+    const video = await apiFeature.query.populate('batchId');
 
     if(Object.keys(video).length === 0) {
         return next(new ErrorHandler('Video has been deleted or not uploaded!', 404))
@@ -80,12 +80,11 @@ exports.updateVideo = catchAsyncErrors ( async (req, res, next) => {
 })
 
 exports.deleteVideo = catchAsyncErrors ( async (req, res, next) => {
-
-    const apiFeature = new APIFeatures(Video, req.body).delete();
-    const video = await Promise.all(apiFeature.query);
+    const apiFeature = new APIFeatures(Video, req.query).delete();
+    const video = await apiFeature.query;
     
     if (Array.isArray(video)) {
-        await video.forEach( vid => minioObjectDelete(vid) );
+        video.forEach( async (vid) => await minioObjectDelete(vid) );
     } else {
         await minioObjectDelete(video);
     }
