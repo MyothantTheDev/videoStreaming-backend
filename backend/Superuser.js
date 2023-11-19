@@ -28,7 +28,7 @@ async function createUser () {
         const rootuser = await getCreds(`Enter username for root: `);
         const rootpwd = await getCreds(`Enter password for root: `);
 
-        if (rootuser != process.env.ROOT_USER || rootpwd != process.env.ROOT_PASSWORD) {
+        if (rootuser != process.env.ROOT_USER && rootpwd != process.env.ROOT_PASSWORD) {
             console.log('Wrong Username or Password. Type Correctly!');
             process.exit();
         }
