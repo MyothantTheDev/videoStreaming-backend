@@ -14,7 +14,10 @@ const userSchema = new mongoose.Schema({
     resetPasswordExpire: Date,
     batchId: { type: mongoose.Schema.Types.ObjectId, ref: 'Batch', default: null },
     createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now }
+    updatedAt: { type: Date, default: Date.now },
+    loggedIn: { type: Boolean, default: false },
+    isActive: { type: Boolean, default: false },
+    deviceHash: { type: Number, default: null}
 });
 
 // Encrypting password before saving user
