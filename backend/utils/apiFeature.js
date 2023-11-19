@@ -66,7 +66,10 @@ class APIFeatures {
     delete() {
         if(Array.isArray(this.queryStr._id)) {
             let array_del = [];
-            this.queryStr._id.forEach((id) => array_del.push(this.query.findByIdAndDelete(id)));
+            for (let index = 0; index < this.queryStr._id.length; index++) {
+                const deleteItem = this.query.findByIdAndDelete({ _id: this.queryStr._id[index] });
+                array_del.push(deleteItem);
+            }
             this.query = array_del;
         } else {
             this.query = this.query.findByIdAndDelete({...this.queryStr});
