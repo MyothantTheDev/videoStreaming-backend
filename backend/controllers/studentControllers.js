@@ -54,9 +54,9 @@ exports.updateStudents = catchAsyncErrors (async (req, res, next) => {
 })
 
 exports.deleteStudents = catchAsyncErrors ( async (req, res, next) => {
-
-    const apiFeature = new APIFeatures(User, req.query).delete();
-    const student = await apiFeature.query;
+    const request = req.query && req.body;
+    const apiFeature = new APIFeatures(User, request).delete();
+    const student = await Promise.all(apiFeature.query);
 
     if(Object.keys(student).length === 0){
         return next(new ErrorHandler('User not found!', 404));
