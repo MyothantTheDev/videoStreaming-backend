@@ -7,7 +7,7 @@ const sendToken = require('../utils/jwtToken');
 //Login User => /api/v1/login
 
 exports.loginUser = catchAsyncErrors ( async (req, res, next) => {
-    const { email, password } = req.body;
+    const { email, password, device } = req.body;
     if (!email || !password) {
         return next(new ErrorHandler('Please enter email & password', 400))
     }
@@ -24,8 +24,18 @@ exports.loginUser = catchAsyncErrors ( async (req, res, next) => {
         return next(new ErrorHandler('Invaild Email or Password', 401));
     }
 
-    sendToken(user, 200, res)
+    if (!user.loggedIn && user.role === 'user') {
 
+        user.loggedIn = true;
+        user.isActive = true;
+        user.deviceHash = device;
+        await user.save();
+        sendToken(user, 200, res);
+    } else if (user.deviceHash !== device && user.role === 'user') {
+        return next(new ErrorHandler('Invaild Device', 403))
+    } else {
+        sendToken(user, 200, res);
+    }
 })
 
 // Get currently logged in user => /api/v1/me
@@ -46,6 +56,13 @@ exports.logoutUser = catchAsyncErrors ( async (req, res, next) => {
         expires: new Date(Date.now()),
         httpOnly: true
     })
+
+    const user = await User.findById(req.user._id);
+    if (user.username !== req.user.username) {
+        return next(new ErrorHandler('Something Went Wrong', 403));
+    }
+    user.isActive = false;
+    await user.save()
 
     res.status(200).json({
         success: true,
